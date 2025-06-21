@@ -1,6 +1,28 @@
 import streamlit as st
-import time
-questions_list=["1. Who wrote Sherlock Holmes?","2. In Harry Potter, what position does Harry play in Quidditch?","3. What is the first book in The Lord of the Rings series?","4. What classic novel features the character Jay Gatsby?","5. Who is the author of 'A Song of Ice and Fire', the book series that inspired Game of Thrones?","6. What does HTML stand for?","7. In Python, what data structure is immutable: list or tuple?","8. What is the time complexity of a binary search algorithm?","9. Which programming language is known for having 'write once, run anywhere' capability?","10. What does the term 'recursion' mean in programming?","11. What is the name of Iron Man’s AI assistant before FRIDAY?","12. What was the first MCU film to cross $2 billion at the box office?","13. Which movie won the Oscar for Best Picture in 2023?","14. What is the highest-grossing animated movie of all time?","15. Who is the main villain in Doctor Strange in the Multiverse of Madness?","16. What is the rarest blood type in humans?","17. Who was the first person to step on the moon?","18. What is the speed of light in vacuum (in km/s)?","19. What is the national sport of Japan?","20. What is the formula of the complex cisplatin, a chemotherapy drug?"]
+
+questions_list = [
+    "Who wrote Sherlock Holmes?",
+    "In Harry Potter, what position does Harry play in Quidditch?",
+    "What is the first book in The Lord of the Rings series?",
+    "What classic novel features the character Jay Gatsby?",
+    "Who is the author of 'A Song of Ice and Fire'?",
+    "What does HTML stand for?",
+    "In Python, what data structure is immutable: list or tuple?",
+    "What is the time complexity of a binary search algorithm?",
+    "Which programming language has 'write once, run anywhere'?",
+    "What does the term 'recursion' mean in programming?",
+    "What is the name of Iron Man’s AI assistant before FRIDAY?",
+    "What was the first MCU film to cross $2 billion?",
+    "Which movie won the Oscar for Best Picture in 2023?",
+    "What is the highest-grossing animated movie of all time?",
+    "Who is the main villain in Doctor Strange: Multiverse of Madness?",
+    "What is the rarest blood type in humans?",
+    "Who was the first person to step on the moon?",
+    "What is the speed of light in vacuum (in km/s)?",
+    "What is the national sport of Japan?",
+    "What is the formula of the complex cisplatin?"
+]
+
 options_list = [
     ["J.R.R. Tolkien", "Agatha Christie", "J.K. Rowling", "Arthur Conan Doyle"],
     ["Beater", "Seeker", "Chaser", "Keeper"],
@@ -23,92 +45,59 @@ options_list = [
     ["Baseball", "Sumo", "Karate", "Judo"],
     ["[Pt(NH₃)₂Cl₂]", "[Co(NH₃)₆]³⁺", "[Fe(CN)₆]⁴⁻", "[Ag(NH₃)₂]⁺"]
 ]
-solutions_tuple=(4,2,1,2,2,1,2,2,2,2,1,2,1,2,2,3,2,1,2,1)
-if "submitted" not in st.session_state:
-    st.session_state.submitted = False
-if not st.session_state.submitted:
-    time.sleep(1.5)
-    def animate_big_title():
-        yield "# "  # Equivalent to st.title()
-        for char in "Welcome to The Geeky Gauntlet Quiz 💻🎬📚":
-            yield char
-            time.sleep(0.05)
-    st.write_stream(animate_big_title)
-    time.sleep(2)
-    st.subheader('The :rainbow[***rules***] of quiz are : ')
-    time.sleep(1)
-    st.markdown('1. :orange[There are 20 questions in all.]')
-    time.sleep(1)
-    st.markdown('2. :red[There is no negative marking.]')
-    time.sleep(1)
-    st.markdown('3. :green[Each question carries 1 Mark.]')
-    time.sleep(1)
-    def start():
-        for char in "Let's start our Quiz then :":
-            yield char
-            time.sleep(0.05)
-    st.write_stream(start()) 
 
-    with st.form('Quiz-'):
-        store_answer=[]
-        missed_index=[]
-        missed_answer=0
-        for i in range(0,len(questions_list)):
-            answer_user=st.radio(questions_list[i],options_list[i], index=None, key=f"q_{i}")
-            if answer_user is not None:
-                selected_index = options_list[i].index(answer_user)
-            else:
-                 selected_index = None
-                 missed_answer+=1
-                 missed_index.append(i)
-            store_answer.append(selected_index)
-        submitted=st.form_submit_button("Submit")
-    if submitted:
-        st.session_state.answers=store_answer
-        st.session_state.submitted=True
-        st.session_state.missed=missed_answer
-        st.session_state.missedind=missed_index
-        st.rerun()
-else:
-    corr=0
-    st.success("Form submitted ✅")
-    miss=st.session_state.missed
-    correct_options = [x - 1 for x in solutions_tuple]
-    correct_index=[]
-    incorrect_index=[]
-    for i in range(0,len(questions_list)):
-        if(st.session_state.answers[i]==correct_options[i]):
-            correct_index.append(i)
-            corr+=1
-        elif(st.session_state.answers[i]!=correct_options[i] and st.session_state.answers[i] is not None):
-            incorrect_index.append(i)
-    st.subheader(f"✅ Correct Answers: {corr}")
-    with st.expander("Correct questions -"):
-         for i in correct_index:
-            st.markdown(f"**{questions_list[i]}**")
-            st.markdown(f"✔️ Correct Answer: `{options_list[i][correct_options[i]]}`")
-    st.subheader(f"❌ Incorrect Answers: {len(questions_list) - corr-miss}")
-    with st.expander("Incorrect questions :"):
-        for i in incorrect_index:
-          st.markdown(f"**{questions_list[i]}**")
-          st.markdown(f"❌ Your answer: {options_list[i][st.session_state.answers[i]]}")
-          st.markdown(f"✔️ Correct Answer: `{options_list[i][correct_options[i]]}`")  
-    st.subheader(f"⚠️ Missed Questions: {miss}")
-    with st.expander("Missed questions :"):
-        for i in st.session_state.missedind:
-            st.markdown(f"**{questions_list[i]}**")
-            st.markdown(f"✔️ Correct Answer: `{options_list[i][correct_options[i]]}`")
-    per=(corr/20)*100
-    st.subheader(f"Percentage = {per:.2f}%")
-    mapp=['one','two','three','four','five']
-    st.subheader("Before closing, please rate us : ")
-    selected=st.feedback("stars")
-    if selected is not None:
-        st.write(f"You selected {mapp[selected]} star(s).")
-        st.write("Thanks for Rating.")
-        st.balloons()
-    st.subheader(":rainbow[Thanks for Playing. Hope You enjoyed. Have a Good Day ahead!]")
-    if st.button("🔁 Restart Quiz"):
-        for key in st.session_state.keys():
-            del st.session_state[key]
-    st.rerun()
+solutions_tuple = (
+    4, 2, 1, 2, 2, 1, 2, 2, 2, 2,
+    1, 2, 1, 2, 2, 3, 2, 1, 2, 1
+)
+
+st.set_page_config(page_title="Geeky Gauntlet Quiz", layout="wide")
+st.title("🎮 The Geeky Gauntlet Quiz: Code, Movies & More!")
+
+st.markdown("""
+Answer all 20 questions below and then click **Submit** to view your score!  
+There is **no time limit** and **no negative marking**.  
+Good luck! 💻🎬📚
+""")
+
+with st.form("quiz_form"):
+    user_answers = []
+    for i in range(len(questions_list)):
+        st.subheader(f"Q{i+1}. {questions_list[i]}")
+        answer = st.radio(
+            "Choose an option:",
+            options_list[i],
+            key=f"q{i}",
+            index=None
+        )
+        user_answers.append(answer)
+
+    submitted = st.form_submit_button("🚀 Submit Answers")
+
+if submitted:
+    score = 0
+    st.markdown("---")
+    st.header("📊 Results")
+
+    for i in range(len(questions_list)):
+        correct_option_index = solutions_tuple[i] - 1
+        correct_option = options_list[i][correct_option_index]
+
+        if user_answers[i] == correct_option:
+            score += 1
+            result = "✅ Correct"
+        else:
+            result = f"❌ Wrong (Correct: {correct_option})"
+
+        st.markdown(f"**Q{i+1}:** {result}")
+
+    st.markdown("---")
+    st.subheader(f"🎯 Final Score: `{score}/20`")
+    if score >= 15:
+        st.success("🔥 Excellent! You're a true geek.")
+    elif score >= 10:
+        st.info("👍 Good! You know your stuff.")
+    else:
+        st.warning("📚 Keep learning — you're on the right path!")
+
+    st.balloons()
