@@ -19,11 +19,3 @@ An interactive quiz web app built with **Python** and **Streamlit**, featuring 2
 
 ---
 
-## 📦 Requirements
-
-- Python 3.13
-- Streamlit
-
-Install dependencies:
-```bash
-pip install streamlit
