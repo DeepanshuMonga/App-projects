@@ -22,7 +22,7 @@ def user_input():
     series = 0
     release_year = int(df['ReleaseYear'].mean())
     return[[story,graphics,combat,exploration,genre_shooter,genre_action,genre_stealth,genre_horror,genre_racing,genre_openworld,genre_multiplayer,release_year]]
-df = pd.read_csv('Game Recommendation.csv')
+df = pd.read_csv('GameRecommendation.csv')
 user_features = user_input()
 
 genre_values = user_features[0][4:11]
