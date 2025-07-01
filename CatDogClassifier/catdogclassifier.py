@@ -8,8 +8,14 @@ import gdown
 MODEL_PATH = "CatsvsDogs.h5"
 FILE_ID = "1h7BiKqgVuL3_RPuBzJKXDCf0K3BTnvaK"  # Replace this!
 if not os.path.exists(MODEL_PATH):
-    with st.spinner("⬇️ Downloading model ..."):
-       gdown.download(f"https://drive.google.com/uc?id={FILE_ID}", MODEL_PATH, quiet=False)
+    with st.status("🚀 Initializing download...", expanded=True) as status:
+    st.write("🔁 Initializing secure model download...")
+    time.sleep(1)
+    st.write("⬇️ Fetching trained model...")
+    gdown.download(f"https://drive.google.com/uc?id={FILE_ID}", MODEL_PATH, quiet=False)
+    time.sleep(1)
+    st.write("✅ Model downloaded successfully!")
+    status.update(label="✅ All set!", state="complete")
 model = load_model(MODEL_PATH)
 st.title(":orange[Welcome to Cat vs Dog CLassifier System : ]")
 st.subheader("Upload image here :")
