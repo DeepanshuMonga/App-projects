@@ -16,7 +16,8 @@ if not os.path.exists(MODEL_PATH):
         st.write("🔁 Initializing secure model download...")
         time.sleep(1)
         st.write("⬇️ Fetching trained model...")
-        gdown.download(f"https://drive.google.com/uc?id={FILE_ID}", MODEL_PATH, quiet=False)
+        url = f"https://drive.google.com/uc?id={FILE_ID}"
+        gdown.download(url, MODEL_PATH, quiet=False, fuzzy=True, use_cookies=False)
         time.sleep(1)
         st.write("✅ Model downloaded successfully!")
         status.update(label="✅ All set!", state="complete")
