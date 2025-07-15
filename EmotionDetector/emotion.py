@@ -71,7 +71,7 @@ if uploaded_file:
         emoji = emoji_map.get(label, "")
         st.success(f"✅ Detected Emotion: **{label.upper()}** {emoji} — Confidence: `{conf:.2f}`")
 st.markdown("### 🖼️ <span style='color:#06D6A0'>Try with Sample Images</span>", unsafe_allow_html=True)
-sample_dir = "Samples"
+sample_dir = "EmotionDetector/Samples"
 sample_files = sorted([f for f in os.listdir(sample_dir) if f.endswith(('jpg', 'jpeg', 'png'))])
 images_per_row = 5
 total_images = len(sample_files)
