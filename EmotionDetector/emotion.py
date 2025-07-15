@@ -5,7 +5,19 @@ import cv2
 from PIL import Image
 import os
 import math
-model = tf.keras.models.load_model("Emotion_Detector.h5")
+import gdown
+MODEL_PATH = "Emotion_Detector.h5"
+FILE_ID = "1vCrwOvdwGL8YxQXBoPHAdtqKr5X8_hyv"
+if not os.path.exists(MODEL_PATH):
+    with st.status("🚀 Initializing download...", expanded=True) as status:
+        st.write("🔁 Initializing secure model download...")
+        time.sleep(1)
+        st.write("⬇️ Fetching trained model...")
+        gdown.download(f"https://drive.google.com/uc?id={FILE_ID}", MODEL_PATH, quiet=False)
+        time.sleep(1)
+        st.write("✅ Model downloaded successfully!")
+        status.update(label="✅ All set!", state="complete")
+model = load_model(MODEL_PATH)
 emotions = ['angry', 'disgusted', 'fearful', 'happy', 'neutral', 'sad', 'surprised']
 emoji_map = {
     'angry': "😠", 'disgusted': "🤢", 'fearful': "😨",
