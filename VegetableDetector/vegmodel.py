@@ -4,7 +4,23 @@ import tensorflow as tf
 from PIL import Image
 import os
 import math
-model = tf.keras.models.load_model(r"C:\Users\monga\OneDrive\Desktop\Coding\DetectVegetable.keras")
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import time
+import gdown
+MODEL_PATH = "DetectVegetables.keras"
+FILE_ID = "1NXiQ74i-oykIpZ6aqMwxMqDX1Ian4lA_"
+if not os.path.exists(MODEL_PATH):
+    with st.status("🚀 Initializing download...", expanded=True) as status:
+        st.write("🔁 Initializing secure model download...")
+        time.sleep(1)
+        st.write("⬇️ Fetching trained model...")
+        url = f"https://drive.google.com/uc?id={FILE_ID}"
+        gdown.download(url, MODEL_PATH, quiet=False, fuzzy=True, use_cookies=False)
+        time.sleep(1)
+        st.write("✅ Model downloaded successfully!")
+        status.update(label="✅ All set!", state="complete")
+model = load_model(MODEL_PATH)
 vegetable_classes = [
     'Bean', 'Bitter_Gourd', 'Bottle_Gourd', 'Broccoli', 'Cabbage', 'Capsicum', 'Carrot',
     'Cauliflower', 'Cucumber', 'Potato', 'Green Pumpkin', 'Radish', 'Tomato'
@@ -36,7 +52,7 @@ if uploaded_file:
     else:
         st.success(f"✅ Detected Vegetable: **{label.upper()}** — Confidence: `{conf:.2f}`")
 st.markdown("### 🖼️ <span style='color:#43aa8b'>Try with Sample Images</span>", unsafe_allow_html=True)
-sample_dir = r"C:\Users\monga\OneDrive\Desktop\Coding\Vegetablesamples"
+sample_dir = 'VegetableDetector/Vegetablesamples'
 sample_files = sorted([f for f in os.listdir(sample_dir) if f.endswith(('jpg', 'jpeg', 'png'))])
 images_per_row = 5
 total_images = len(sample_files)
