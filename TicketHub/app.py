@@ -5,8 +5,11 @@ import os
 app = Flask(__name__)
 app.secret_key = 'replace-with-a-secure-secret'
 
+# Use the folder where this script resides as the base folder
 DATA_FOLDER = os.path.abspath(os.path.dirname(__file__))
-CRED_FILE = r"C:\Users\monga\OneDrive\Desktop\Coding\Hackathon\project\Login Credentials.csv"
+
+# Relative paths inside the project folder
+CRED_FILE = os.path.join(DATA_FOLDER, "Login Credentials.csv")
 MASTER_FILE = os.path.join(DATA_FOLDER, "MasterTicket.csv")
 
 def load_credentials():
@@ -43,7 +46,11 @@ def user_dashboard():
 
     username = session["username"]
     user_file = get_user_file(username)
+
+    # Load user tickets or create empty DataFrame if file doesn't exist
     df = pd.read_csv(user_file) if os.path.exists(user_file) else pd.DataFrame(columns=['Ticket', 'Status'])
+
+    # Convert 'Resolved' tickets to 'Closed' on user dashboard view
     if not df.empty:
         changed = False
         if (df['Status'] == 'Resolved').any():
@@ -52,16 +59,18 @@ def user_dashboard():
             changed = True
         if changed:
             df = pd.read_csv(user_file)
+
     tickets = df.to_dict('records')
 
     if request.method == "POST":
         ticket = request.form['ticket']
         status = "Open"
-        # Update user file
+        # Append new ticket with headers if file doesn't exist or is empty
         write_header = not os.path.exists(user_file) or os.path.getsize(user_file) == 0
         new_entry = pd.DataFrame([[ticket, status]], columns=['Ticket', 'Status'])
         new_entry.to_csv(user_file, mode='a', header=write_header, index=False)
-        # Update master ticket
+
+        # Append to master ticket file similarly
         master_entry = pd.DataFrame([[ticket, status, username]], columns=['Ticket', 'Status', 'Username'])
         master_entry.to_csv(MASTER_FILE, mode='a', header=not os.path.exists(MASTER_FILE), index=False)
         flash("Ticket Added!")
@@ -86,12 +95,14 @@ def agent_dashboard():
         ticket_content = df.at[idx, 'Ticket']
         username = df.at[idx, 'Username']
         df.to_csv(MASTER_FILE, index=False)
+
         user_file = get_user_file(username)
         if os.path.exists(user_file):
             df_user = pd.read_csv(user_file)
             match = df_user["Ticket"] == ticket_content
             df_user.loc[match, "Status"] = "Resolved"
             df_user.to_csv(user_file, index=False)
+
         flash(f"Ticket {idx} resolved!")
         return redirect(url_for('agent_dashboard'))
 
@@ -111,7 +122,7 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    # Ensure master file exists
+    # Ensure master file exists before start
     if not os.path.exists(MASTER_FILE):
         pd.DataFrame(columns=['Ticket', 'Status', 'Username']).to_csv(MASTER_FILE, index=False)
     app.run(debug=True)
